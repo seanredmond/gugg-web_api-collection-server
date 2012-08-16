@@ -1,0 +1,22 @@
+# Database and Access Key settings for tests
+#
+# Rename this file to collection_server_spec.yml and replace placeholders with 
+# real values.
+#
+# API keys can be generated in Ruby with the following commands
+#
+#     > require "securerandom"
+#     > SecureRandom.hex(16)
+#
+---
+db:
+  mysql:
+    user: DATABASE_USER
+    password: DATABASE_USER_PASSWORD
+    host: DATABASE_HOSTNAME
+    db: DATABASE_NAME
+
+keys:
+  bad: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx       # Should not exist in DB
+  cancelled: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Should exist but have no access
+  good: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx      # Should exist with TEST access
