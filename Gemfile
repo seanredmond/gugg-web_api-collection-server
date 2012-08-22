@@ -10,6 +10,8 @@ gem "sequel"
 
 gem "gugg-web_api-collection-db", :git => 
   "https://github.com/Guggenheim/gugg-web_api-collection-db.git"
+gem "gugg-web_api-access", :git => 
+  "https://github.com/Guggenheim/gugg-web_api-access.git"
 
 group :development do
   gem 'rspec'
