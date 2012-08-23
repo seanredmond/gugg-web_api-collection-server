@@ -8,6 +8,9 @@ module Gugg
 
           class UnauthorizedError < ApiException
           end
+
+          class NotAcceptableError < ApiException
+          end
         end
       end
     end

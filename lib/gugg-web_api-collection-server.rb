@@ -17,10 +17,17 @@ module Gugg
 
           before do
             content_type 'application/vnd.guggenheim.collection+json'
+
+            # Check authentication
             key = request.env['HTTP_X_GUGGENHEIM_API_KEY'] || params['key']
             @access = Gugg::WebApi::Access::get(key)
             if @access == nil
               raise Exceptions::UnauthorizedError, "Unauthorized"
+            end
+
+            # Check that client accepts content type
+            if !acceptsCorrectContentType?(request.env['HTTP_ACCEPT'])
+              raise Exceptions::NotAcceptableError, "Not Acceptable"
             end
 
             @root = "#{request.scheme}://#{request.host}"
@@ -104,6 +111,18 @@ module Gugg
             body jsonp err
           end
 
+          error Exceptions::NotAcceptableError do
+            err = {
+              :error => {
+                :code => 406,
+                :message =>  env['sinatra.error'].message             
+              }
+            }
+            status 401
+            headers "WWW-Authenticate" => "Basic realm=\"API\""
+            body jsonp err
+          end
+
           error 404 do
             err = {
               :error => {
@@ -123,6 +142,12 @@ module Gugg
               }
             }
             jsonp err
+          end
+
+          def acceptsCorrectContentType?(accept)
+            return accept.split(/\s*,\s*/).include?(
+              'application/vnd.guggenheim.collection+json'
+            )
           end
         end
       end
