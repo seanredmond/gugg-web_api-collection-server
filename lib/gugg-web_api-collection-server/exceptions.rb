@@ -3,13 +3,13 @@ module Gugg
     module Collection
       module Server 
         module Exceptions
-          class ApiException < Exception
+          class ApiError < StandardError
           end
 
-          class UnauthorizedError < ApiException
+          class UnauthorizedError < ApiError
           end
 
-          class NotAcceptableError < ApiException
+          class NotAcceptableError < ApiError
           end
         end
       end
