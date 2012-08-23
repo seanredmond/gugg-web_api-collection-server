@@ -19,6 +19,25 @@ describe 'API Server' do
     Gugg::WebApi::Collection::Server::App
   end
 
+  context "for bad parameters" do
+    before :all do
+      get '/acquisitions', {:per_page => 'xyz'}, {
+        'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+        'Accept' => 'application/vnd.guggenheim.collection+json'
+      }
+      @rsp = last_response
+      @json = JSON.parse(last_response.body)
+    end
+
+    it "should return a 400" do
+      @rsp.status.should eq 400
+    end
+
+    it "should return JSON error with the correct code" do
+      @json["error"]["code"].should eq 400
+    end
+  end
+
   context "for authentication" do
     context "with no key" do
       before :all do 

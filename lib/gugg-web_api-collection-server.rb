@@ -26,7 +26,7 @@ module Gugg
             end
 
             # Check that client accepts content type
-            if !acceptsCorrectContentType?(request.env['HTTP_ACCEPT'])
+            if !acceptsCorrectContentType?(request.env['HTTP_ACCEPT'] || request.env['Accept'])
               raise Exceptions::NotAcceptableError, "Not Acceptable"
             end
 
@@ -99,6 +99,17 @@ module Gugg
           # Errors
           #-------------------------------------------------------------
 
+          error Gugg::WebApi::Collection::Db::BadParameterError do
+            err = {
+              :error => {
+                :code => 400,
+                :message =>  'Bad Request: ' + env['sinatra.error'].message             
+              }
+            }
+            status 400
+            body jsonp err
+          end
+
           error Exceptions::UnauthorizedError do
             err = {
               :error => {
@@ -118,8 +129,7 @@ module Gugg
                 :message =>  env['sinatra.error'].message             
               }
             }
-            status 401
-            headers "WWW-Authenticate" => "Basic realm=\"API\""
+            status 406
             body jsonp err
           end
 
@@ -145,7 +155,7 @@ module Gugg
           end
 
           def acceptsCorrectContentType?(accept)
-            return accept.split(/\s*,\s*/).include?(
+            return accept != nil && accept.split(/\s*,\s*/).include?(
               'application/vnd.guggenheim.collection+json'
             )
           end
