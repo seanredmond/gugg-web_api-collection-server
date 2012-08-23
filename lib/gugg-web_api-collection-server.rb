@@ -4,6 +4,7 @@ require "sequel"
 require "gugg-web_api-collection-server/version"
 require "gugg-web_api-collection-db"
 require "gugg-web_api-access"
+require "gugg-web_api-collection-server/exceptions"
 
 module Gugg
   module WebApi
@@ -19,7 +20,7 @@ module Gugg
             key = request.env['HTTP_X_GUGGENHEIM_API_KEY'] || params['key']
             @access = Gugg::WebApi::Access::get(key)
             if @access == nil
-              raise "No access!"
+              raise Exceptions::UnauthorizedError, "Unauthorized"
             end
 
             @root = "#{request.scheme}://#{request.host}"
@@ -87,9 +88,39 @@ module Gugg
             jsonp Db::CollectionObject[params[:captures].first].as_resource
           end
 
-          error do
+          #-------------------------------------------------------------
+          # Errors
+          #-------------------------------------------------------------
+
+          error Exceptions::UnauthorizedError do
             err = {
-              :error => env['sinatra.error'].message
+              :error => {
+                :code => 401,
+                :message =>  env['sinatra.error'].message             
+              }
+            }
+            status 401
+            headers "WWW-Authenticate" => "Basic realm=\"API\""
+            body jsonp err
+          end
+
+          error 404 do
+            err = {
+              :error => {
+                :code => 404,
+                :message =>  'Not Found'             
+              }
+            }
+            jsonp err
+          end
+
+          error do
+            status 500
+            err = {
+              :error => {
+                :code => env['sinatra.error'].code,
+                :message => env['sinatra.error'].message
+              }
             }
             jsonp err
           end
