@@ -8,7 +8,6 @@ db = cfg['db']['mysql']
 @DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
   :host=>db['host'], :charset=>'utf8')
 goodkey = cfg['keys']['good']
-puts "HEY: #{goodkey}"
 
 require 'gugg-web_api-collection-server'
 
@@ -17,7 +16,10 @@ require 'rack/test'
 # set :environment, :test
 
 def make_request(uri, key)
-  get uri, {}, {'HTTP_X_GUGGENHEIM_API_KEY' => key}
+  get uri, {}, {
+    'HTTP_X_GUGGENHEIM_API_KEY' => key,
+    'Accept' => 'application/vnd.guggenheim.collection+json'
+  }
   JSON.parse(last_response.body)
 end
 
