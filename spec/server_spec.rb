@@ -314,8 +314,75 @@ describe 'API Server' do
       end
 
       it "should return a Movements resource" do
-        puts @data.inspect
         @data.should be_an_instance_of Hash
+      end
+
+      it "should have _links" do
+        @data["_links"].should be_an_instance_of Hash
+      end
+
+      it "should link to itself" do
+        @data["_links"]["_self"]["href"].
+          should eq "http://example.org/movements"
+      end
+
+      it "should have movement resources" do
+        @data["movements"].should be_an_instance_of Array
+      end
+
+      it "should have a few movements" do
+        @data["movements"].count.should be >= 10
+      end
+
+      it "should have 5 objects in each movement" do
+        @data["movements"].each do |a|
+          a["objects"]["items"].should have_at_least(1).items
+          a["objects"]["items"].should have_at_most(5).items
+        end
+      end
+
+      it "should have movements that link to themselves" do
+        @data["movements"].each do |a|
+          a["_links"]["_self"]["href"].
+            should start_with "http://example.org/movements/"
+        end
+      end
+    end
+  end
+
+  describe '/movements/{id}' do
+    before :all do
+      @mov_id = 195210 # Cubism
+    end
+
+    context "with defaults" do
+      before :all do
+        @data = make_request("/movements/#{@mov_id}", goodkey)
+      end
+
+      it "should have the right id" do
+        @data["id"].should eq @mov_id
+      end
+
+      it "should have the right name" do
+        @data["name"].should eq 'Cubism'
+      end
+
+      describe "_links object" do
+        before :all do
+          @links = @data["_links"]
+        end
+
+        it "should link to itself" do
+          @links["_self"]["href"].
+            should eq "http://example.org/movements/#{@mov_id}"
+        end
+
+        it "should link to the next page of results" do
+          @links["next"]["href"].
+            should start_with "http://example.org/movements/#{@mov_id}"
+          @links["next"]["href"].should include("page=2", "per_page=20")
+        end
       end
     end
   end

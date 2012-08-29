@@ -45,6 +45,9 @@ module Gugg
               Gugg::WebApi::Collection::Db::Acquisition, 'acquisitions'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
+              Gugg::WebApi::Collection::Db::Movement, 'movements'
+            )
+            Gugg::WebApi::Collection::Linkable::map_path(
               Gugg::WebApi::Collection::Db::CollectionObject, 'objects'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
@@ -89,6 +92,31 @@ module Gugg
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             jsonp Db::Acquisition[id].as_resource(pass_params)
+          end
+
+          #-------------------------------------------------------------
+          # Movements
+          #-------------------------------------------------------------
+          get '/movements' do
+            allowable = ['per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Movement.list(pass_params).merge({
+              :_links => {
+                :_self => {
+                  :href => "#{@root}/movements"
+                },
+                :item => {
+                  :href=> "#{@root}/movements/{id}"
+                }
+              }
+            })
+          end
+
+          get %r{/movements/(\d+)} do
+            id = params[:captures].first
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Movement[id].as_resource(pass_params)
           end
 
           get %r{/objects/(\d+)} do
