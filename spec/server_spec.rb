@@ -408,6 +408,11 @@ describe 'API Server' do
       it "should belong to Expressionism" do
         @pwb['movements'][0]['name'].should eq 'Expressionism'
       end
+
+      it "should belong to an Acquisition" do
+        @pwb['acquisition']['name'].
+          should eq 'Solomon R. Guggenheim Founding Collection'
+      end
     end
   end
 end
