@@ -307,6 +307,19 @@ describe 'API Server' do
     end
   end
 
+  describe '/movements' do
+    context "with defaults" do
+      before :all do
+        @data = make_request('/movements', goodkey)
+      end
+
+      it "should return a Movements resource" do
+        puts @data.inspect
+        @data.should be_an_instance_of Hash
+      end
+    end
+  end
+
   describe '/objects' do
     describe '/objects/{id}' do
       before :all do
