@@ -309,11 +309,25 @@ describe 'API Server' do
 
   describe '/objects' do
     describe '/objects/{id}' do
-      it "should retrieve one object" do
+      before :all do
         @pwb = make_request('/objects/1867', goodkey)
+      end
+
+      it "should retrieve one object" do  
         @pwb.should be_an_instance_of Hash
+      end
+
+      it "should have a list of Movements" do
+        @pwb['movements'].should be_an_instance_of Array
+      end
+
+      it "should have one Movement" do
+        @pwb['movements'].count.should eq 1
+      end
+
+      it "should belong to Expressionism" do
+        @pwb['movements'][0]['name'].should eq 'Expressionism'
       end
     end
   end
-
 end
