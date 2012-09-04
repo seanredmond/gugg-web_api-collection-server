@@ -54,6 +54,10 @@ module Gugg
               Gugg::WebApi::Collection::Db::Constituent, 'constituents'
             )
 
+            Gugg::WebApi::Collection::Linkable::map_path(
+              Gugg::WebApi::Collection::Db::Site, 'sites'
+            )
+
           end
 
           get '/' do
@@ -72,6 +76,9 @@ module Gugg
             jsonp response
           end
 
+          #-------------------------------------------------------------
+          # Acquisitions
+          #-------------------------------------------------------------
           get '/acquisitions' do
             allowable = ['per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
@@ -119,8 +126,36 @@ module Gugg
             jsonp Db::Movement[id].as_resource(pass_params)
           end
 
+          #-------------------------------------------------------------
+          # Objects
+          #-------------------------------------------------------------
           get %r{/objects/(\d+)} do
             jsonp Db::CollectionObject[params[:captures].first].as_resource
+          end
+
+          #-------------------------------------------------------------
+          # Sites
+          #-------------------------------------------------------------
+          get '/sites' do
+            allowable = ['per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Site.list(pass_params).merge({
+              :_links => {
+                :_self => {
+                  :href => "#{@root}/sites"
+                },
+                :item => {
+                  :href=> "#{@root}/sites/{id}"
+                }
+              }
+            })
+          end
+
+          get %r{/sites/(\d+)} do
+            id = params[:captures].first
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Site[id].as_resource(pass_params)
           end
 
           #-------------------------------------------------------------

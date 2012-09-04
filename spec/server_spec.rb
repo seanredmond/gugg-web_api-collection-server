@@ -415,4 +415,41 @@ describe 'API Server' do
       end
     end
   end
+
+  describe '/sites/{id}' do
+    before :all do
+      @site_id = 3 # SRGM
+    end
+
+    context "with defaults" do
+      before :all do
+        @data = make_request("/sites/#{@site_id}", goodkey)
+      end
+
+      it "should have the right id" do
+        @data["id"].should eq @site_id
+      end
+
+      it "should have the right name" do
+        @data["name"].should eq 'Solomon R. Guggenheim Museum'
+      end
+
+      describe "_links object" do
+        before :all do
+          @links = @data["_links"]
+        end
+
+        it "should link to itself" do
+          @links["_self"]["href"].
+            should eq "http://example.org/sites/#{@site_id}"
+        end
+
+        it "should link to the next page of results" do
+          @links["next"]["href"].
+            should start_with "http://example.org/sites/#{@site_id}"
+          @links["next"]["href"].should include("page=2", "per_page=20")
+        end
+      end
+    end
+  end
 end
