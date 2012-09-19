@@ -45,6 +45,9 @@ module Gugg
               Gugg::WebApi::Collection::Db::Acquisition, 'acquisitions'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
+              Gugg::WebApi::Collection::Db::Exhibition, 'exhibitions'
+            )
+            Gugg::WebApi::Collection::Linkable::map_path(
               Gugg::WebApi::Collection::Db::Movement, 'movements'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
@@ -99,6 +102,64 @@ module Gugg
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             jsonp Db::Acquisition[id].as_resource(pass_params)
+          end
+
+          #-------------------------------------------------------------
+          # Constituents
+          #-------------------------------------------------------------
+          get '/constituents' do
+            response = {
+              :_links => {
+                :_self => {
+                  :href => "#{@root}/constituents"
+                },
+                :item => {
+                  :href => "#{@root}/constituents/{id}"
+                },
+                :alpha => {
+                  :href => "#{@root}/constituents/{a-z}"
+                }
+              }
+            }
+
+            jsonp response
+          end
+
+          get %r{/constituents/(\d+)} do
+            id = params[:captures].first
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Constituent[id].as_resource(pass_params)
+          end
+
+          get %r{/constituents/([a-zA-Z])} do
+            init = params[:captures].first
+            jsonp Db::Constituent.list({'initial' => init})
+          end
+
+          #-------------------------------------------------------------
+          # Exhibitions
+          #-------------------------------------------------------------
+          get '/exhibitions' do
+            allowable = ['per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Exhibition.list(pass_params).merge({
+              :_links => {
+                :_self => {
+                  :href => "#{@root}/exhibitions"
+                },
+                :item => {
+                  :href=> "#{@root}/exhibitions/{id}"
+                }
+              }
+            })
+          end
+
+          get %r{/exhibitions/(\d+)} do
+            id = params[:captures].first
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::Exhibition[id].as_resource(pass_params)
           end
 
           #-------------------------------------------------------------

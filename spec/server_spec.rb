@@ -307,6 +307,51 @@ describe 'API Server' do
     end
   end
 
+  describe '/exhibitions' do
+    context "with defaults" do
+      before :all do
+        @data = make_request('/exhibitions', goodkey)
+      end
+
+      it "should return an Exhibition resource" do
+        @data.should be_an_instance_of Hash
+      end
+
+      it "should have _links" do
+        @data["_links"].should be_an_instance_of Hash
+      end
+
+      it "should link to itself" do
+        @data["_links"]["_self"]["href"].
+          should eq "http://example.org/exhibitions"
+      end
+
+      it "should have movement resources" do
+        @data["exhibitions"].should be_an_instance_of Array
+      end
+
+      it "should have a few movements" do
+        @data["exhibitions"].count.should be >= 2
+      end
+
+      it "should have 5 objects in each exhibition" do
+        @data["exhibitions"].each do |a|
+          a["objects"]["items"].should have_at_least(1).items
+          a["objects"]["items"].should have_at_most(5).items
+        end
+      end
+
+      it "should have exhibitions that link to themselves" do
+        @data["exhibitions"].each do |a|
+          a["_links"]["_self"]["href"].
+            should start_with "http://example.org/exhibitions/"
+        end
+      end
+    end
+  end
+
+
+
   describe '/movements' do
     context "with defaults" do
       before :all do
