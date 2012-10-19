@@ -190,6 +190,18 @@ module Gugg
           #-------------------------------------------------------------
           # Objects
           #-------------------------------------------------------------
+          get '/objects' do
+            response = {
+              '_links' => {
+                '_self'   => {'href' => "#{@root}/objects"},
+                'item'    => {'href' => "#{@root}/objects/{id}"},
+                'on view' => {'href' => "#{@root}/objects/on-view"},
+              }
+            }
+
+            jsonp response
+          end
+
           get %r{/objects/(\d+)} do
             jsonp Db::CollectionObject[params[:captures].first].as_resource
           end
