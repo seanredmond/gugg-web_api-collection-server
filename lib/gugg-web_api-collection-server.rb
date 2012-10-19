@@ -66,13 +66,13 @@ module Gugg
           get '/' do
             response = {
               '_links' => {
-                'acquisitions' => {'href' => '#{@root}/acquisitions'},
-                'constituents' => {'href' => '#{@root}/constituents'},
-                'exhibitions' => {'href' => '#{@root}/exhibitions'},
-                'locations' => {'href' => '#{@root}/locations'},
-                'movements' => {'href' => '#{@root}/movements'},
-                'objects' => {'href' => '#{@root}/objects'},
-                'sites' => {'href' => '#{@root}/sites'}
+                'acquisitions' => {'href' => "#{@root}/acquisitions"},
+                'constituents' => {'href' => "#{@root}/constituents"},
+                'exhibitions'  => {'href' => "#{@root}/exhibitions"},
+                'locations'    => {'href' => "#{@root}/locations"},
+                'movements'    => {'href' => "#{@root}/movements"},
+                'objects'      => {'href' => "#{@root}/objects"},
+                'sites'        => {'href' => "#{@root}/sites"}
               }
             }
 
