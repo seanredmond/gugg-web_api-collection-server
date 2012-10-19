@@ -194,6 +194,10 @@ module Gugg
             jsonp Db::CollectionObject[params[:captures].first].as_resource
           end
 
+          get '/objects/on-view' do
+            jsonp Db::CollectionObject::on_view({:add_to_path => 'on-view'})
+          end
+
           #-------------------------------------------------------------
           # Sites
           #-------------------------------------------------------------
@@ -271,7 +275,7 @@ module Gugg
             status 500
             err = {
               :error => {
-                :code => env['sinatra.error'].code,
+                :code => 500, # env['sinatra.error'].code,
                 :message => env['sinatra.error'].message
               }
             }
