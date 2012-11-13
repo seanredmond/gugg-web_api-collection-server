@@ -67,10 +67,10 @@ describe 'API Server' do
         @data["acquisitions"].count.should be >= 10
       end
 
-      it "should have 5 objects in each acquisition" do
+      it "should have no objects in each acquisition" do
         @data["acquisitions"].each do |a|
-          a["objects"]["items"].should have_at_least(1).items
-          a["objects"]["items"].should have_at_most(5).items
+          a["objects"]["items"].should_not be # have(0).items
+          # a["objects"]["items"].should have_at_most(5).items
         end
       end
 
