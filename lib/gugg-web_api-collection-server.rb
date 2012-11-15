@@ -234,6 +234,23 @@ module Gugg
             jsonp Db::CollectionObject::decades({:add_to_path => 'dates'})
           end
 
+          get %r{/objects/dates/(\d+)$} do
+            year = params[:captures].first
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::CollectionObject::by_year(
+              year, {:add_to_path => 'dates'}.merge!(pass_params))
+          end
+
+          get %r{/objects/dates/(\d+)/(\d+)} do
+            start_year = params[:captures][0]
+            end_year = params[:captures][1]
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::CollectionObject::by_year_range(
+              start_year, end_year, {:add_to_path => 'dates'}.merge!(pass_params))
+          end
+
           #-------------------------------------------------------------
           # Sites
           #-------------------------------------------------------------

@@ -475,6 +475,40 @@ describe 'API Server' do
     end
   end
 
+  describe '/objects/dates' do
+    before :all do
+      @dates = make_request('/objects/dates', goodkey)
+    end
+
+    it "should retrieve one object" do  
+      @dates.should be_an_instance_of Hash
+      @dates['_links']['decades'].should be_an_instance_of Array
+    end
+
+    describe '/objects/dates/{year}' do
+      before :all do
+        @year = make_request('/objects/dates/1923', goodkey)
+      end
+
+      it "should retrieve one object" do  
+        @year.should be_an_instance_of Hash
+        @year['objects'].should be_an_instance_of Hash
+      end
+
+    end
+
+    describe '/objects/dates/{year}/{year}' do
+      before :all do
+        @years = make_request('/objects/dates/1923/1933', goodkey)
+      end
+
+      it "should retrieve one object" do  
+        @years.should be_an_instance_of Hash
+        @years['objects'].should be_an_instance_of Hash
+      end
+    end
+  end 
+
   describe '/sites/{id}' do
     before :all do
       @site_id = 3 # SRGM
