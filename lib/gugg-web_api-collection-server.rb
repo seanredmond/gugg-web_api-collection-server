@@ -59,10 +59,26 @@ module Gugg
             Gugg::WebApi::Collection::Linkable::map_path(
               Gugg::WebApi::Collection::Db::Constituent, 'constituents'
             )
-
             Gugg::WebApi::Collection::Linkable::map_path(
               Gugg::WebApi::Collection::Db::Site, 'sites'
             )
+
+            Gugg::WebApi::Collection::Db::Media::media_root = 
+              "http://emuseum2.guggenheim.org/media"
+            Gugg::WebApi::Collection::Db::Media::media_paths = {
+              :full => 'full',
+              :large => 'large',
+              :medium => 'previews',
+              :small => 'thumbnails',
+              :tiny => 'postagestamps'
+            }
+            Gugg::WebApi::Collection::Db::Media::media_dimensions = {
+              :large => 490,
+              :medium => 300,
+              :small => 160,
+              :tiny => 62
+            }
+
 
           end
 
@@ -86,7 +102,7 @@ module Gugg
           # Acquisitions
           #-------------------------------------------------------------
           get '/acquisitions' do
-            allowable = ['per_page', 'no_objects']
+            allowable = ['per_page']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             jsonp Db::Acquisition.list(pass_params).merge({
               :_links => {
@@ -199,6 +215,7 @@ module Gugg
                 '_self'   => {'href' => "#{@root}/objects"},
                 'item'    => {'href' => "#{@root}/objects/{id}"},
                 'on view' => {'href' => "#{@root}/objects/on-view"},
+                'by date' => {'href' => "#{@root}/objects/dates"},
               }
             }
 
@@ -211,6 +228,10 @@ module Gugg
 
           get '/objects/on-view' do
             jsonp Db::CollectionObject::on_view({:add_to_path => 'on-view'})
+          end
+
+          get '/objects/dates' do
+            jsonp Db::CollectionObject::decades({:add_to_path => 'dates'})
           end
 
           #-------------------------------------------------------------
