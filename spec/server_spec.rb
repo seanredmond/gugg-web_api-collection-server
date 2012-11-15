@@ -459,6 +459,20 @@ describe 'API Server' do
           should eq 'Solomon R. Guggenheim Founding Collection'
       end
     end
+
+    describe '/objects/on-view' do
+      before :all do
+        @onview = make_request('/objects/on-view', goodkey)
+      end
+
+      it "should retrieve one object" do  
+        @onview.should be_an_instance_of Hash
+      end
+
+      it "should have a list of objects" do
+        @onview['objects']['count'].should be > 0
+      end
+    end
   end
 
   describe '/sites/{id}' do
