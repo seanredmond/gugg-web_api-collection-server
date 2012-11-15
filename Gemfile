@@ -17,4 +17,5 @@ group :development do
   gem 'rspec'
   gem 'rack-test'
   gem 'mysql'
+  gem 'json'
 end
