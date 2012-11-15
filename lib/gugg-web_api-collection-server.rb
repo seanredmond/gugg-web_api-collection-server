@@ -36,6 +36,9 @@ module Gugg
               @root += ":#{request.port}"
             end
 
+            # remove trailing slash
+            @root.sub!(/\/$/, '');
+
             if request.env['SCRIPT_NAME'] != ""
               @root = @root + '/' + request.env['SCRIPT_NAME']
             end
