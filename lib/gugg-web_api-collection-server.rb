@@ -213,9 +213,13 @@ module Gugg
 
           get %r{/movements/(\d+)} do
             id = params[:captures].first
+            mov = Db::Movement[id]
+            if mov == nil
+              raise Exceptions::NoSuchID, "No available movement with ID #{id}"
+            end
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::Movement[id].as_resource(pass_params)
+            jsonp mov.as_resource(pass_params)
           end
 
           #-------------------------------------------------------------
