@@ -184,9 +184,13 @@ module Gugg
 
           get %r{/exhibitions/(\d+)} do
             id = params[:captures].first
+            exh = Db::Exhibition[id]
+            if exh == nil
+              raise Exceptions::NoSuchID, "No available exhibition with ID #{id}"
+            end
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::Exhibition[id].as_resource(pass_params)
+            jsonp exh.as_resource(pass_params)
           end
 
           #-------------------------------------------------------------
