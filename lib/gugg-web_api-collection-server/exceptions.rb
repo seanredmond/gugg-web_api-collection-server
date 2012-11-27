@@ -11,6 +11,9 @@ module Gugg
 
           class NotAcceptableError < ApiError
           end
+
+          class NoSuchID < ApiError
+          end
         end
       end
     end
