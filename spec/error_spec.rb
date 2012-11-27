@@ -117,5 +117,122 @@ describe 'API Server' do
         @json["error"]["code"].should eq 406
       end
     end
+
+    context "with non-existing ids" do
+      context "with acquisitions" do
+        before :all do
+          get '/acquisitions/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+
+      context "with constituents" do
+        before :all do
+          get '/constituents/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+
+      context "with exhibitions" do
+        before :all do
+          get '/exhibitions/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+
+      context "with movements" do
+        before :all do
+          get '/movements/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+
+      context "with objects" do
+        before :all do
+          get '/objects/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+
+      context "with sites" do
+        before :all do
+          get '/sites/9876543210', {}, {
+            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'Accept' => 'application/vnd.guggenheim.collection+json'
+          }
+          @rsp = last_response
+          @json = JSON.parse(last_response.body)
+        end
+
+        it "should return a 404" do
+          @rsp.status.should eq 404
+        end
+
+        it "should return JSON error with the correct code" do
+          @json["error"]["code"].should eq 404
+        end
+      end
+    end
+
   end
 end
