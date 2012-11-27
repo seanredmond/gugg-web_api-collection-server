@@ -334,10 +334,10 @@ describe 'API Server' do
         @data["exhibitions"].count.should be >= 2
       end
 
-      it "should have 5 objects in each exhibition" do
+      it "should have no objects in each exhibition" do
         @data["exhibitions"].each do |a|
-          a["objects"]["items"].should have_at_least(1).items
-          a["objects"]["items"].should have_at_most(5).items
+          a["objects"]["items"].should_not be
+          a["objects"]["total_count"].should be > 0
         end
       end
 
@@ -381,8 +381,8 @@ describe 'API Server' do
 
       it "should have 5 objects in each movement" do
         @data["movements"].each do |a|
-          a["objects"]["items"].should have_at_least(1).items
-          a["objects"]["items"].should have_at_most(5).items
+          a["objects"]["items"].should_not be
+          a["objects"]["total_count"].should be > 0
         end
       end
 
