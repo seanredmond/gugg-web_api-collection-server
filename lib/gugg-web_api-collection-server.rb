@@ -150,9 +150,13 @@ module Gugg
 
           get %r{/constituents/(\d+)} do
             id = params[:captures].first
+            con = Db::Constituent[id]
+            if con == nil
+              raise Exceptions::NoSuchID, "No available constituent with ID #{id}"
+            end
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::Constituent[id].as_resource(pass_params)
+            jsonp con.as_resource(pass_params)
           end
 
           get %r{/constituents/([a-zA-Z])} do
