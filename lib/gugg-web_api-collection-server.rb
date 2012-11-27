@@ -293,9 +293,13 @@ module Gugg
 
           get %r{/sites/(\d+)} do
             id = params[:captures].first
+            site = Db::Site[id]
+            if site == nil
+              raise Exceptions::NoSuchID, "No available site with ID #{id}"
+            end
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::Site[id].as_resource(pass_params)
+            jsonp site.as_resource(pass_params)
           end
 
           #-------------------------------------------------------------
