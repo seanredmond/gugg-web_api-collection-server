@@ -118,9 +118,13 @@ module Gugg
 
           get %r{/acquisitions/(\d+)} do
             id = params[:captures].first
+            acq = Db::Acquisition[id]
+            if acq == nil
+              raise Exceptions::NoSuchID, "No available acquisition with ID #{id}"
+            end
             allowable = ['page', 'per_page', 'no_objects']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::Acquisition[id].as_resource(pass_params)
+            jsonp acq.as_resource(pass_params)
           end
 
           #-------------------------------------------------------------
