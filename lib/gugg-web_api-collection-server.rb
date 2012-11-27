@@ -210,20 +210,26 @@ module Gugg
           # Objects
           #-------------------------------------------------------------
           get '/objects' do
-            response = {
-              '_links' => {
-                '_self'   => {'href' => "#{@root}/objects"},
+            allowable = ['per_page', 'page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            response = Db::CollectionObject::list(pass_params)
+
+            response[:_links].merge!({
                 'item'    => {'href' => "#{@root}/objects/{id}"},
                 'on view' => {'href' => "#{@root}/objects/on-view"},
-                'by date' => {'href' => "#{@root}/objects/dates"},
-              }
-            }
+                'by date' => {'href' => "#{@root}/objects/dates"}
+            })
 
             jsonp response
           end
 
           get %r{/objects/(\d+)} do
-            jsonp Db::CollectionObject[params[:captures].first].as_resource
+            id = params[:captures].first
+            obj = Db::CollectionObject[id]
+            if obj == nil
+              raise Exceptions::NoSuchID, "No available object with ID #{id}"
+            end
+            jsonp obj.as_resource
           end
 
           get '/objects/on-view' do
@@ -311,6 +317,17 @@ module Gugg
               }
             }
             status 406
+            body jsonp err
+          end
+
+          error Exceptions::NoSuchID do
+            err = {
+              :error => {
+                :code => 404,
+                :message =>  env['sinatra.error'].message             
+              }
+            }
+            status 404
             body jsonp err
           end
 
