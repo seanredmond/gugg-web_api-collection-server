@@ -57,6 +57,9 @@ module Gugg
               Gugg::WebApi::Collection::Db::CollectionObject, 'objects'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
+              Gugg::WebApi::Collection::Db::ObjectType, 'objects/types'
+            )
+            Gugg::WebApi::Collection::Linkable::map_path(
               Gugg::WebApi::Collection::Db::Constituent, 'constituents'
             )
             Gugg::WebApi::Collection::Linkable::map_path(
@@ -271,6 +274,28 @@ module Gugg
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             jsonp Db::CollectionObject::by_year_range(
               start_year, end_year, {:add_to_path => 'dates'}.merge!(pass_params))
+          end
+
+          #-------------------------------------------------------------
+          # Object Types
+          #-------------------------------------------------------------
+          get '/objects/types' do
+            allowable = ['per_page', 'page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            response = Db::ObjectType::list(pass_params)
+
+            jsonp response
+          end
+
+          get %r{/objects/types/(\d+)} do
+            id = params[:captures].first
+            obj = Db::ObjectType[id]
+            if obj == nil
+              raise Exceptions::NoSuchID, "No available object type with ID #{id}"
+            end
+            allowable = ['page', 'per_page', 'no_objects']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp obj.as_resource(pass_params)
           end
 
           #-------------------------------------------------------------

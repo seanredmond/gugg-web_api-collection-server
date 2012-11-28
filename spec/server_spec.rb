@@ -507,6 +507,72 @@ describe 'API Server' do
         @years['objects'].should be_an_instance_of Hash
       end
     end
+
+    describe '/objects/types' do
+      before :all do
+        @types = make_request('/objects/types', goodkey)
+      end
+
+      it "retrieves a Hash" do  
+        @types.should be_an_instance_of Hash
+      end
+
+      it "has a list of object types" do  
+        @types['types'].should be_an_instance_of Array
+      end
+
+      context 'with defaults' do
+        it 'has a count of objects' do  
+          @types['types'].first['objects']['total_count'].should be > 0
+        end
+
+        it 'has no embedded objects' do  
+          @types['types'].first['objects']['items'].should_not be
+        end
+      end
+
+      context 'with objects requested' do
+        before :all do
+          @types_with_obj = make_request('/objects/types?per_page=20', goodkey)
+        end
+
+        it 'has embedded objects' do  
+          @types_with_obj['types'].
+            first['objects']['items'].count.should be <= 20
+        end
+      end
+
+      describe '/objects/types/{id}' do
+        before :all do
+          @painting = make_request('/objects/types/195198', goodkey)
+        end
+
+        it 'is the right resource' do
+          @painting['name'].should eq "Painting"
+        end
+
+        context 'with defaults' do
+          it 'has embedded objects' do
+            @painting['objects']['items'].count.should be <= 20
+          end
+        end
+
+        context 'with no objects requested' do
+          before :all do
+            @painting_no_obj = 
+              make_request('/objects/types/195198?no_objects=1', goodkey)
+          end
+
+          it 'has no embedded objects' do
+            @painting_no_obj['objects']['items'].should_not be
+          end
+
+          it 'has a count of objects' do
+            @painting_no_obj['objects']['total_count'].should be > 0
+          end
+        end
+      end
+    end
   end 
 
   describe '/sites/{id}' do
