@@ -39,6 +39,10 @@ module Gugg
             # remove trailing slash
             @root.sub!(/\/$/, '');
 
+            @script_name = request.env['SCRIPT_NAME']
+            # remove leading slash
+            @script_name.sub!(/^\//, '');
+
             if request.env['SCRIPT_NAME'] != ""
               @root = @root + '/' + request.env['SCRIPT_NAME']
             end
