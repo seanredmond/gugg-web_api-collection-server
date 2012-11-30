@@ -252,7 +252,9 @@ module Gugg
             if obj == nil
               raise Exceptions::NoSuchID, "No available object with ID #{id}"
             end
-            jsonp obj.as_resource
+            allowable = ['no_essay']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp obj.as_resource(pass_params)
           end
 
           get '/objects/on-view' do

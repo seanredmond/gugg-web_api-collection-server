@@ -458,6 +458,24 @@ describe 'API Server' do
         @pwb['acquisition']['name'].
           should eq 'Solomon R. Guggenheim Founding Collection'
       end
+
+      it 'has an essay' do
+        @pwb['essay'].should_not be_nil
+      end
+
+      context 'with no_essay' do
+        before :all do
+          @pwb_no_essay = make_request('/objects/1867?no_essay=true', goodkey)
+        end
+
+        it 'does not have an essay' do
+          @pwb_no_essay.keys.include?('essay').should be_false
+        end
+
+        it 'says it has an essay available' do
+          @pwb_no_essay['has_essay'].should be_true
+        end
+      end
     end
 
     describe '/objects/on-view' do
