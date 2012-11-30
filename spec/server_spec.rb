@@ -433,6 +433,36 @@ describe 'API Server' do
   end
 
   describe '/objects' do
+    describe 'index' do
+      before :all do
+        @index = make_request('/objects', goodkey)
+        @first = @index['objects']['items'].first
+      end
+
+      it 'retrieve an object' do
+        @index.should be_an_instance_of Hash
+      end
+
+      it 'has a list of 20 objects' do
+        @index['objects']['items'].count.should eq 20
+      end
+
+      it 'has objects with essays' do
+        @first.keys.include?('essay').should be_true
+      end
+
+      context 'with no_essay = true' do
+        before :all do
+          @index = make_request('/objects?no_essay=true', goodkey)
+          @first = @index['objects']['items'].first
+        end
+
+        it 'has objects with no essays' do
+          @first.keys.include?('essay').should be_false
+        end
+      end
+    end
+
     describe '/objects/{id}' do
       before :all do
         @pwb = make_request('/objects/1867', goodkey)
@@ -490,6 +520,17 @@ describe 'API Server' do
       it "should have a list of objects" do
         @onview['objects']['count'].should be > 0
       end
+
+      context 'with no_essay = true' do
+        before :all do
+          @onview = make_request('/objects/on-view?no_essay=true', goodkey)
+          @first = @onview['objects']['items'].first
+        end
+
+        it 'has objects with no essays' do
+          @first.keys.include?('essay').should be_false
+        end
+      end
     end
   end
 
@@ -513,6 +554,16 @@ describe 'API Server' do
         @year['objects'].should be_an_instance_of Hash
       end
 
+      context 'with no_essay = true' do
+        before :all do
+          @year = make_request('/objects/dates/1923?no_essay=true', goodkey)
+          @first = @year['objects']['items'].first
+        end
+
+        it 'has objects with no essays' do
+          @first.keys.include?('essay').should be_false
+        end
+      end
     end
 
     describe '/objects/dates/{year}/{year}' do
@@ -523,6 +574,17 @@ describe 'API Server' do
       it "should retrieve one object" do  
         @years.should be_an_instance_of Hash
         @years['objects'].should be_an_instance_of Hash
+      end
+
+      context 'with no_essay = true' do
+        before :all do
+          @years = make_request('/objects/dates/1923/1933?no_essay=true', goodkey)
+          @first = @years['objects']['items'].first
+        end
+
+        it 'has objects with no essays' do
+          @first.keys.include?('essay').should be_false
+        end
       end
     end
 
@@ -552,11 +614,29 @@ describe 'API Server' do
       context 'with objects requested' do
         before :all do
           @types_with_obj = make_request('/objects/types?per_page=20', goodkey)
+          @first = @types_with_obj['types'].first['objects']['items'].first
         end
 
         it 'has embedded objects' do  
           @types_with_obj['types'].
             first['objects']['items'].count.should be <= 20
+        end
+
+        it 'has objects with essays' do
+          @first.keys.include?('essay').should be_true
+        end
+
+        context 'with no_essay = true' do
+          before :all do 
+            @types_with_obj_no_essays = 
+              make_request('/objects/types?per_page=20&no_essay=true', goodkey)
+            @first = @types_with_obj_no_essays['types'].
+              first['objects']['items'].first
+          end
+
+          it 'has objects with no essays' do
+            @first.keys.include?('essay').should be_false
+          end
         end
       end
 
@@ -573,6 +653,11 @@ describe 'API Server' do
           it 'has embedded objects' do
             @painting['objects']['items'].count.should be <= 20
           end
+
+          it 'has objects with essays' do
+            @painting['objects']['items'].first.keys.include?('essay').
+              should be_true
+          end
         end
 
         context 'with no objects requested' do
@@ -587,6 +672,18 @@ describe 'API Server' do
 
           it 'has a count of objects' do
             @painting_no_obj['objects']['total_count'].should be > 0
+          end
+        end
+
+        context 'with no_essay = true' do
+          before :all do
+            @painting_no_essay = 
+              make_request('/objects/types/195198?no_essay=true', goodkey)
+          end
+
+          it 'has objects with no essays' do
+            @painting_no_essay['objects']['items'].first.keys.include?('essay').
+              should be_false
           end
         end
       end

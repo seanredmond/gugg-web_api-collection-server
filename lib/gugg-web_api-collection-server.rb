@@ -233,7 +233,7 @@ module Gugg
           # Objects
           #-------------------------------------------------------------
           get '/objects' do
-            allowable = ['per_page', 'page', 'no_objects']
+            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             response = Db::CollectionObject::list(pass_params)
 
@@ -258,38 +258,44 @@ module Gugg
           end
 
           get '/objects/on-view' do
-            jsonp Db::CollectionObject::on_view({:add_to_path => 'on-view'})
+            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            jsonp Db::CollectionObject::on_view(
+              pass_params.merge!({:add_to_path => 'on-view'}))
           end
 
           get '/objects/dates' do
+            pass_params = check_params(
+              ['per_page', 'page', 'no_objects', 'no_essay'],
+              {:add_to_path => 'dates'})
             jsonp Db::CollectionObject::decades({:add_to_path => 'dates'})
           end
 
           get %r{/objects/dates/(\d+)$} do
             year = params[:captures].first
-            allowable = ['page', 'per_page', 'no_objects']
-            pass_params = params.reject{|k, v| !allowable.include?(k)}
-            jsonp Db::CollectionObject::by_year(
-              year, {:add_to_path => 'dates'}.merge!(pass_params))
+            pass_params = check_params(
+              ['per_page', 'page', 'no_objects', 'no_essay'],
+              {:add_to_path => 'dates'})
+            jsonp Db::CollectionObject::by_year(year, pass_params)
           end
 
           get %r{/objects/dates/(\d+)/(\d+)} do
             start_year = params[:captures][0]
             end_year = params[:captures][1]
-            allowable = ['page', 'per_page', 'no_objects']
-            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            pass_params = check_params(
+              ['per_page', 'page', 'no_objects', 'no_essay'],
+              {:add_to_path => 'dates'})
             jsonp Db::CollectionObject::by_year_range(
-              start_year, end_year, {:add_to_path => 'dates'}.merge!(pass_params))
+              start_year, end_year, pass_params)
           end
 
           #-------------------------------------------------------------
           # Object Types
           #-------------------------------------------------------------
           get '/objects/types' do
-            allowable = ['per_page', 'page', 'no_objects']
-            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            pass_params = check_params(
+              ['per_page', 'page', 'no_objects', 'no_essay'])
             response = Db::ObjectType::list(pass_params)
-
             jsonp response
           end
 
@@ -299,7 +305,7 @@ module Gugg
             if obj == nil
               raise Exceptions::NoSuchID, "No available object type with ID #{id}"
             end
-            allowable = ['page', 'per_page', 'no_objects']
+            allowable = ['page', 'per_page', 'no_objects', 'no_essay']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             jsonp obj.as_resource(pass_params)
           end
@@ -401,6 +407,12 @@ module Gugg
               }
             }
             jsonp err
+          end
+
+          def check_params(allowable, to_merge)
+            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
+            pass_params.merge(to_merge)
           end
 
           def acceptsCorrectContentType?(accept)
