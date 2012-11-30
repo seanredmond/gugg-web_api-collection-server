@@ -293,9 +293,10 @@ module Gugg
           # Object Types
           #-------------------------------------------------------------
           get '/objects/types' do
-            pass_params = check_params(
-              ['per_page', 'page', 'no_objects', 'no_essay'])
+            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}
             response = Db::ObjectType::list(pass_params)
+
             jsonp response
           end
 
