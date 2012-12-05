@@ -1,3 +1,4 @@
+require "yajl"
 require "sinatra"
 require "sinatra/jsonp"
 require "sequel"
