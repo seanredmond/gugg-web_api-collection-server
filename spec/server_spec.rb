@@ -1,7 +1,6 @@
 require "rubygems"
 require "sequel"
 require "yaml"
-require "json"
 
 cfg = YAML.load_file('collection_server_spec.yml')
 db = cfg['db']['mysql']
@@ -20,7 +19,7 @@ def make_request(uri, key)
     'HTTP_X_GUGGENHEIM_API_KEY' => key,
     'Accept' => 'application/vnd.guggenheim.collection+json'
   }
-  JSON.parse(last_response.body)
+  Yajl::Parser.parse(last_response.body)
 end
 
 describe 'API Server' do
