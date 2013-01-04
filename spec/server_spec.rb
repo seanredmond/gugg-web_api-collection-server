@@ -1,12 +1,23 @@
 require "rubygems"
 require "sequel"
-require "yaml"
+# require "yaml"
 
-cfg = YAML.load_file('collection_server_spec.yml')
-db = cfg['db']['mysql']
-@DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
-  :host=>db['host'], :charset=>'utf8')
-goodkey = cfg['keys']['good']
+#cfg = YAML.load_file('collection_server_spec.yml')
+# db = cfg['db']['mysql']
+# @DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
+#   :host=>db['host'], :charset=>'utf8')
+
+cwd = File.dirname(__FILE__)
+
+@DB=Sequel.sqlite
+
+structure = File.open(File.join(cwd, 'test-structure.sql'), 'r').read
+@DB.execute_ddl(structure)
+
+contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
+@DB.execute_dui(contents)
+
+goodkey = 'ed3c63916af176b3af878f98156e07f4'
 
 require 'gugg-web_api-collection-server'
 
@@ -63,7 +74,7 @@ describe 'API Server' do
       end
 
       it "should have a few acquisitions" do
-        @data["acquisitions"].count.should be >= 10
+        @data["acquisitions"].count.should eq 3
       end
 
       it "should have no objects in each acquisition" do
@@ -140,11 +151,11 @@ describe 'API Server' do
           @links["_self"]["href"].should eq "http://example.org/acquisitions/6"
         end
 
-        it "should link to the next page of results" do
-          @links["next"]["href"].
-            should start_with "http://example.org/acquisitions/6"
-          @links["next"]["href"].should include("page=2", "per_page=20")
-        end
+        # it "should link to the next page of results" do
+        #   @links["next"]["href"].
+        #     should start_with "http://example.org/acquisitions/6"
+        #   @links["next"]["href"].should include("page=2", "per_page=20")
+        # end
       end
 
       describe "paginated objects" do
@@ -153,27 +164,27 @@ describe 'API Server' do
         end
 
         it "should contain a list of 20 objects" do
-          @obj["items"].should have(20).items
+          @obj["items"].should have(15).items
         end
 
         it "should have as many items as it says it does" do
           @obj["count"].should eq @obj["items"].count
         end
 
-        it "should have as many items as it says it will" do
-          @obj["items_per_page"].should eq @obj["items"].count
-        end
+        # it "should have as many items as it says it will" do
+        #   @obj["items_per_page"].should eq @obj["items"].count
+        # end
 
         it "should be on the first page" do
           @obj["page"].should eq 1
         end
 
         it "should have at least 55 total items" do
-          @obj["total_count"].should be >= 55
+          @obj["total_count"].should be >= 15
         end
 
         it "should have at least 3 total pages" do
-          @obj["pages"].should be >= 3
+          @obj["pages"].should eq 1
         end
       end
     end
@@ -198,11 +209,11 @@ describe 'API Server' do
             @links["_self"]["href"].should_not include("page")
           end
 
-          it "should link to the next page of results" do
-            @links["next"]["href"].
-              should start_with "http://example.org/acquisitions/6"
-            @links["next"]["href"].should include("page=3", "per_page=20")
-          end
+          # it "should link to the next page of results" do
+          #   @links["next"]["href"].
+          #     should start_with "http://example.org/acquisitions/6"
+          #   @links["next"]["href"].should include("page=3", "per_page=20")
+          # end
 
           it "should link to the previous page of results" do
             @links["prev"]["href"].
@@ -214,7 +225,7 @@ describe 'API Server' do
 
       context "for items per page" do
         before :all do
-          @data = make_request("/acquisitions/#{@acq_id}?per_page=40", goodkey)
+          @data = make_request("/acquisitions/#{@acq_id}?per_page=2", goodkey)
         end
 
         describe "_links object" do
@@ -234,7 +245,7 @@ describe 'API Server' do
           it "should link to the next page of results" do
             @links["next"]["href"].
               should start_with "http://example.org/acquisitions/6"
-            @links["next"]["href"].should include("page=2", "per_page=40")
+            @links["next"]["href"].should include("page=2", "per_page=2")
           end
         end
 
@@ -244,7 +255,7 @@ describe 'API Server' do
           end
 
           it "should contain a list of 40 objects" do
-            @obj["items"].should have(40).items
+            @obj["items"].should have(2).items
           end
 
           it "should have as many items as it says it does" do
@@ -260,7 +271,7 @@ describe 'API Server' do
           end
 
           it "should have at least 55 total items" do
-            @obj["total_count"].should be >= 55
+            @obj["total_count"].should be >= 15
           end
 
           it "should have at least 2 total pages" do
@@ -295,7 +306,7 @@ describe 'API Server' do
           end
 
           it "should have a total count" do
-            @obj["total_count"].should be >= 55
+            @obj["total_count"].should be >= 15
           end
 
           it "should not have any objects" do
@@ -375,7 +386,7 @@ describe 'API Server' do
       end
 
       it "should have a few movements" do
-        @data["movements"].count.should be >= 10
+        @data["movements"].count.should be >= 9
       end
 
       it "should have 5 objects in each movement" do
@@ -422,11 +433,11 @@ describe 'API Server' do
             should eq "http://example.org/movements/#{@mov_id}"
         end
 
-        it "should link to the next page of results" do
-          @links["next"]["href"].
-            should start_with "http://example.org/movements/#{@mov_id}"
-          @links["next"]["href"].should include("page=2", "per_page=20")
-        end
+        # it "should link to the next page of results" do
+        #   @links["next"]["href"].
+        #     should start_with "http://example.org/movements/#{@mov_id}"
+        #   @links["next"]["href"].should include("page=2", "per_page=20")
+        # end
       end
     end
   end

@@ -14,4 +14,17 @@ Gem::Specification.new do |gem|
   gem.name          = "gugg-web_api-collection-server"
   gem.require_paths = ["lib"]
   gem.version       = Gugg::WebApi::Collection::Server::VERSION
+
+  gem.add_dependency "sinatra"
+  gem.add_dependency "sinatra-base"
+  gem.add_dependency "sinatra-jsonp"
+  gem.add_dependency "sequel"
+  gem.add_dependency "yajl-ruby"
+
+  gem.add_development_dependency "rake"
+  gem.add_development_dependency 'rspec'
+  gem.add_development_dependency 'rack-test'
+  gem.add_development_dependency 'sqlite3'
+  gem.add_development_dependency 'json'
+
 end

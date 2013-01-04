@@ -1,16 +1,29 @@
 require "rubygems"
 require "sequel"
-require "yaml"
+# require "yaml"
 require "json"
 
-cfg = YAML.load_file('collection_server_spec.yml')
-db = cfg['db']['mysql']
-@DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
-  :host=>db['host'], :charset=>'utf8')
+# cfg = YAML.load_file('collection_server_spec.yml')
+# db = cfg['db']['mysql']
+# @DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
+#   :host=>db['host'], :charset=>'utf8')
+
+cwd = File.dirname(__FILE__)
+
+@DB=Sequel.sqlite
+
+structure = File.open(File.join(cwd, 'test-structure.sql'), 'r').read
+@DB.execute_ddl(structure)
+
+contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
+@DB.execute_dui(contents)
 
 require 'gugg-web_api-collection-server'
 
 require 'rack/test'
+
+goodkey = 'ed3c63916af176b3af878f98156e07f4'
+badkey = '00ea1ae3bd1fef315ba91d2ad8a125ad'
 
 describe 'API Server' do
   include Rack::Test::Methods
@@ -22,7 +35,7 @@ describe 'API Server' do
   context "for bad parameters" do
     before :all do
       get '/acquisitions', {:per_page => 'xyz'}, {
-        'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+        'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
         'Accept' => 'application/vnd.guggenheim.collection+json'
       }
       @rsp = last_response
@@ -61,7 +74,7 @@ describe 'API Server' do
 
     context "with a bad key" do
       before :all do 
-        get '/', {}, {'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['bad']}
+        get '/', {}, {'HTTP_X_GUGGENHEIM_API_KEY' => badkey}
         @rsp = last_response
         @json = JSON.parse(last_response.body)
       end
@@ -84,7 +97,7 @@ describe 'API Server' do
     context "with no Accept header" do
       before :all do
         get '/', {}, {
-          'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good']
+          'HTTP_X_GUGGENHEIM_API_KEY' => goodkey
         }
         @rsp = last_response
         @json = JSON.parse(last_response.body)
@@ -102,7 +115,7 @@ describe 'API Server' do
     context "with wrong Accept header" do
       before :all do
         get '/', {}, {
-          'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+          'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
           'ACCEPT' => 'txt/html'
         }
         @rsp = last_response
@@ -122,7 +135,7 @@ describe 'API Server' do
       context "with acquisitions" do
         before :all do
           get '/acquisitions/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
@@ -141,7 +154,7 @@ describe 'API Server' do
       context "with constituents" do
         before :all do
           get '/constituents/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
@@ -160,7 +173,7 @@ describe 'API Server' do
       context "with exhibitions" do
         before :all do
           get '/exhibitions/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
@@ -179,7 +192,7 @@ describe 'API Server' do
       context "with movements" do
         before :all do
           get '/movements/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
@@ -198,7 +211,7 @@ describe 'API Server' do
       context "with objects" do
         before :all do
           get '/objects/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
@@ -217,7 +230,7 @@ describe 'API Server' do
       context "with sites" do
         before :all do
           get '/sites/9876543210', {}, {
-            'HTTP_X_GUGGENHEIM_API_KEY' => cfg['keys']['good'],
+            'HTTP_X_GUGGENHEIM_API_KEY' => goodkey,
             'Accept' => 'application/vnd.guggenheim.collection+json'
           }
           @rsp = last_response
