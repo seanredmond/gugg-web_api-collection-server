@@ -5,7 +5,7 @@ gemspec
 
 
 gem "gugg-web_api-collection-db", :git => 
-  "git@github.com:Guggenheim/gugg-web_api-collection-db.git"
+  "git://github.com/Guggenheim/gugg-web_api-collection-db.git"
 gem "gugg-web_api-access", :git => 
-  "git@github.com:Guggenheim/gugg-web_api-access.git"
+  "git://github.com/Guggenheim/gugg-web_api-access.git"
 
