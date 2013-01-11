@@ -1,5 +1,7 @@
 # Gugg::WebApi::Collection::Server
 
+[![Build Status](https://travis-ci.org/Guggenheim/gugg-web_api-collection-server.png?branch=master)](https://travis-ci.org/Guggenheim/gugg-web_api-collection-server)
+
 TODO: Write a gem description
 
 ## Installation
