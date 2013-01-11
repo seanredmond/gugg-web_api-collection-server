@@ -72,7 +72,7 @@ module Gugg
             )
 
             Gugg::WebApi::Collection::Db::Media::media_root = 
-              "http://emuseum2.guggenheim.org/media"
+              MEDIA_ROOT
             Gugg::WebApi::Collection::Db::Media::media_paths = {
               :full => 'full',
               :large => 'large',

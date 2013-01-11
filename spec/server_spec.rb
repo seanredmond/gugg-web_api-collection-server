@@ -17,6 +17,8 @@ structure = File.open(File.join(cwd, 'test-structure.sql'), 'r').read
 contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
 @DB.execute_dui(contents)
 
+MEDIA_ROOT = 'http://u.r.l/media'
+
 goodkey = 'ed3c63916af176b3af878f98156e07f4'
 
 require 'gugg-web_api-collection-server'
@@ -445,7 +447,7 @@ describe 'API Server' do
   describe '/objects' do
     describe 'index' do
       before :all do
-        @index = make_request('/objects', goodkey)
+        @index = make_request('/objects/', goodkey)
         @first = @index['objects']['items'].first
       end
 
@@ -734,6 +736,17 @@ describe 'API Server' do
           @links["next"]["href"].should include("page=2", "per_page=20")
         end
       end
+    end
+  end
+
+  describe 'media links' do
+    before :all do
+      @obj = make_request('/objects/671', goodkey)
+    end
+
+    it "has correct media url" do
+      @obj['media'][0]['assets']['full']['_links']['_self']['href'].
+        should start_with 'http://u.r.l/media'
     end
   end
 end
