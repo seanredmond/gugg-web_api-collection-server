@@ -447,7 +447,7 @@ describe 'API Server' do
   describe '/objects' do
     describe 'index' do
       before :all do
-        @index = make_request('/objects/', goodkey)
+        @index = make_request('/objects', goodkey)
         @first = @index['objects']['items'].first
       end
 
