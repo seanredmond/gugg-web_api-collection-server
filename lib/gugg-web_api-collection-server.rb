@@ -222,7 +222,7 @@ module Gugg
           # Objects
           #-------------------------------------------------------------
           get '/objects' do
-            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
+            allowable = ['per_page', 'page', 'no_objects', 'no_essay', 'collection']
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             response = Db::CollectionObject::list(pass_params)
 

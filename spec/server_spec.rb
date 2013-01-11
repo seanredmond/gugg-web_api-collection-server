@@ -469,6 +469,10 @@ describe 'API Server' do
         @index['objects']['items'].count.should eq 20
       end
 
+      it 'has a total of 47 objects' do
+        @index['objects']['total_count'].should eq 47
+      end
+
       it 'has objects with essays' do
         @first.keys.include?('essay').should be_true
       end
@@ -481,6 +485,16 @@ describe 'API Server' do
 
         it 'has objects with no essays' do
           @first.keys.include?('essay').should be_false
+        end
+      end
+
+      context 'with all collection = all' do
+        before :all do
+          @index = make_request('/objects?collection=all', goodkey)
+        end
+
+        it 'has a total of 57 objects' do
+          @index['objects']['total_count'].should eq 57
         end
       end
     end
