@@ -16,6 +16,24 @@ db:
     host: DATABASE_HOSTNAME
     db: DATABASE_NAME
 
+media:
+  root: http://emuseum2.guggenheim.org/media
+  sizes:
+    full:
+      path: full
+    large:
+      path: large
+      size: 490
+    medium:
+      path: previews
+      size: 300
+    small:
+      path: thumbnails
+      size: 160
+    tiny:
+      path: postagestamps
+      size: 62
+
 keys:
   bad: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx       # Should not exist in DB
   cancelled: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx # Should exist but have no access
