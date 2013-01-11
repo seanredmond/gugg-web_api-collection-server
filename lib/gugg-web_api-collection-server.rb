@@ -71,21 +71,9 @@ module Gugg
               Gugg::WebApi::Collection::Db::Site, 'sites'
             )
 
-            Gugg::WebApi::Collection::Db::Media::media_root = 
-              MEDIA_ROOT
-            Gugg::WebApi::Collection::Db::Media::media_paths = {
-              :full => 'full',
-              :large => 'large',
-              :medium => 'previews',
-              :small => 'thumbnails',
-              :tiny => 'postagestamps'
-            }
-            Gugg::WebApi::Collection::Db::Media::media_dimensions = {
-              :large => 490,
-              :medium => 300,
-              :small => 160,
-              :tiny => 62
-            }
+            Gugg::WebApi::Collection::Db::Media::media_root = MEDIA_ROOT
+            Gugg::WebApi::Collection::Db::Media::media_paths = MEDIA_PATHS 
+            Gugg::WebApi::Collection::Db::Media::media_dimensions = MEDIA_DIMENSIONS
 
 
           end

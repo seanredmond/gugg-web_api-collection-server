@@ -18,6 +18,16 @@ contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
 @DB.execute_dui(contents)
 
 MEDIA_ROOT = 'http://u.r.l/media'
+MEDIA_PATHS = {
+  :one => 'path_one',
+  :two => 'path_two',
+  :three => 'path_three'
+}
+MEDIA_DIMENSIONS = {
+  :one => 100,
+  :two => 200,
+  :three => nil
+}
 
 goodkey = 'ed3c63916af176b3af878f98156e07f4'
 
@@ -745,8 +755,23 @@ describe 'API Server' do
     end
 
     it "has correct media url" do
-      @obj['media'][0]['assets']['full']['_links']['_self']['href'].
+      @obj['media'][0]['assets']['one']['_links']['_self']['href'].
         should start_with 'http://u.r.l/media'
+    end
+
+    it 'has correct media paths' do
+      @obj['media'][0]['assets']['one']['_links']['_self']['href'].
+        should start_with 'http://u.r.l/media/path_one/'
+      @obj['media'][0]['assets']['two']['_links']['_self']['href'].
+        should start_with 'http://u.r.l/media/path_two/'
+      @obj['media'][0]['assets']['three']['_links']['_self']['href'].
+        should start_with 'http://u.r.l/media/path_three/'
+    end
+
+    it 'has the correct media dimensions' do
+      @obj['media'][0]['assets']['one']['width'].should eq 100
+      @obj['media'][0]['assets']['two']['width'].should eq 200
+      @obj['media'][0]['assets']['three']['width'].should eq 573
     end
   end
 end
