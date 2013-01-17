@@ -348,11 +348,11 @@ describe 'API Server' do
           should eq "http://example.org/exhibitions"
       end
 
-      it "should have movement resources" do
+      it "should have exhibition resources" do
         @data["exhibitions"].should be_an_instance_of Array
       end
 
-      it "should have a few movements" do
+      it "should have a few exhibitions" do
         @data["exhibitions"].count.should be >= 2
       end
 
@@ -527,6 +527,15 @@ describe 'API Server' do
 
       it 'has an essay' do
         @pwb['essay'].should_not be_nil
+      end
+
+      it 'lists exhibitions' do
+        @pwb['exhibitions'].should be_an_instance_of Array
+      end
+
+      it 'has exhibitions with locations and exhibitions' do
+        @pwb['exhibitions'][0]['location'].should be_an_instance_of Hash
+        @pwb['exhibitions'][0]['exhibition'].should be_an_instance_of Hash
       end
 
       context 'with no_essay' do
