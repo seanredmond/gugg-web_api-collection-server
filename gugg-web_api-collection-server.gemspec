@@ -20,6 +20,8 @@ Gem::Specification.new do |gem|
   gem.add_dependency "sinatra-jsonp"
   gem.add_dependency "sequel"
   gem.add_dependency "yajl-ruby"
+  gem.add_dependency "gugg-web_api-collection-db", ">=1.1"
+  gem.add_dependency "gugg-web_api-access"
 
   gem.add_development_dependency "rake"
   gem.add_development_dependency 'rspec'
