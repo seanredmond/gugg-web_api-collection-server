@@ -1,21 +1,11 @@
 require "rubygems"
 require "sequel"
 
-cwd = File.dirname(__FILE__)
-
-@DB=Sequel.sqlite
-
-structure = File.open(File.join(cwd, 'test-structure.sql'), 'r').read
-@DB.execute_ddl(structure)
-
-contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
-@DB.execute_dui(contents)
-
-goodkey = 'ed3c63916af176b3af878f98156e07f4'
-
-require 'gugg-web_api-collection-server'
+require 'spec_helper'
 
 require 'rack/test'
+
+goodkey = 'ed3c63916af176b3af878f98156e07f4'
 
 def make_request(uri, key)
   get uri, {}, {

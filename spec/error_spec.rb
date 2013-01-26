@@ -1,26 +1,11 @@
 require "rubygems"
 require "sequel"
-# require "yaml"
 require "json"
 
-# cfg = YAML.load_file('collection_server_spec.yml')
-# db = cfg['db']['mysql']
-# @DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
-#   :host=>db['host'], :charset=>'utf8')
-
-cwd = File.dirname(__FILE__)
-
-@DB=Sequel.sqlite
-
-structure = File.open(File.join(cwd, 'test-structure.sql'), 'r').read
-@DB.execute_ddl(structure)
-
-contents = File.open(File.join(cwd, 'test-data.sql'), 'r').read
-@DB.execute_dui(contents)
-
-require 'gugg-web_api-collection-server'
+require 'spec_helper'
 
 require 'rack/test'
+
 
 goodkey = 'ed3c63916af176b3af878f98156e07f4'
 badkey = '00ea1ae3bd1fef315ba91d2ad8a125ad'
