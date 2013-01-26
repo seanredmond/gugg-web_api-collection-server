@@ -1,17 +1,9 @@
 require "rubygems"
 require "sequel"
-# require "yaml"
-
-#cfg = YAML.load_file('collection_server_spec.yml')
-# db = cfg['db']['mysql']
-# @DB = Sequel.mysql(db['db'], :user=>db['user'], :password=>db['password'], 
-#   :host=>db['host'], :charset=>'utf8')
 
 require 'spec_helper'
 
 require 'rack/test'
-
-# set :environment, :test
 
 goodkey = 'ed3c63916af176b3af878f98156e07f4'
 
