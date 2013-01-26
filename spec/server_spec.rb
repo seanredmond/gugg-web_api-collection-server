@@ -322,6 +322,18 @@ describe 'API Server' do
           @data["constituents"].map{|c| c["lastname"]}.should_not include "Tanaka"
         end
       end
+
+      context 'with non-collection artists included' do
+        before :all do
+          @data = make_request('/constituents/t?collection=all', goodkey)
+        end
+
+        it "returns collection and non-collection artists" do
+          @data["constituents"].count.should eq 2
+          @data["constituents"].map{|c| c["lastname"]}.should include "Toulouse Lautrec Monfa"
+          @data["constituents"].map{|c| c["lastname"]}.should include "Tanaka"
+        end
+      end
     end
   end
 
