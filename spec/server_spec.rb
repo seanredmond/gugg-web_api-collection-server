@@ -299,6 +299,44 @@ describe 'API Server' do
     end
   end
 
+  describe '/constituents' do
+    context 'with defaults' do
+      before :all do
+        @data = make_request('/constituents', goodkey)
+      end
+
+      it "returns an index" do
+        @data.keys.should eq ["_links"]
+      end
+    end
+
+    describe '/constituents/{a-z}' do
+      context 'with defaults' do
+        before :all do
+          @data = make_request('/constituents/t', goodkey)
+        end
+
+        it "returns only permanent collection artists" do
+          @data["constituents"].count.should eq 1
+          @data["constituents"].map{|c| c["lastname"]}.should include "Toulouse Lautrec Monfa"
+          @data["constituents"].map{|c| c["lastname"]}.should_not include "Tanaka"
+        end
+      end
+
+      context 'with non-collection artists included' do
+        before :all do
+          @data = make_request('/constituents/t?collection=all', goodkey)
+        end
+
+        it "returns collection and non-collection artists" do
+          @data["constituents"].count.should eq 2
+          @data["constituents"].map{|c| c["lastname"]}.should include "Toulouse Lautrec Monfa"
+          @data["constituents"].map{|c| c["lastname"]}.should include "Tanaka"
+        end
+      end
+    end
+  end
+
   describe '/exhibitions' do
     context "with defaults" do
       before :all do

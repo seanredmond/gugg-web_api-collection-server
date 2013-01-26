@@ -157,7 +157,10 @@ module Gugg
 
           get %r{/constituents/([a-zA-Z])} do
             init = params[:captures].first
-            jsonp Db::Constituent.list({'initial' => init})
+            allowable = ['page', 'per_page', 'no_objects', 'collection']
+            pass_params = params.reject{|k, v| !allowable.include?(k)}.
+              merge({'initial' => init})
+            jsonp Db::Constituent.list(pass_params)
           end
 
           #-------------------------------------------------------------
