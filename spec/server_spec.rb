@@ -478,7 +478,7 @@ describe 'API Server' do
       end
 
       it 'has a total of 47 objects' do
-        @index['objects']['total_count'].should eq 47
+        @index['objects']['total_count'].should eq 52
       end
 
       it 'has objects with essays' do
@@ -502,7 +502,7 @@ describe 'API Server' do
         end
 
         it 'has a total of 57 objects' do
-          @index['objects']['total_count'].should eq 57
+          @index['objects']['total_count'].should eq 62
         end
       end
     end
@@ -557,6 +557,16 @@ describe 'API Server' do
 
         it 'says it has an essay available' do
           @pwb_no_essay['has_essay'].should be_true
+        end
+      end
+
+      context 'objects with extended labels' do
+        before :all do
+          @extended = make_request('/objects/28707', goodkey)
+        end
+
+        it 'have extended labels' do
+          @extended['extended_label'].should_not be_nil
         end
       end
     end
