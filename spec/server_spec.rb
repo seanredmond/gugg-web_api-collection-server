@@ -478,7 +478,7 @@ describe 'API Server' do
       end
 
       it 'has a total of 47 objects' do
-        @index['objects']['total_count'].should eq 47
+        @index['objects']['total_count'].should eq 52
       end
 
       it 'has objects with essays' do
@@ -502,7 +502,7 @@ describe 'API Server' do
         end
 
         it 'has a total of 57 objects' do
-          @index['objects']['total_count'].should eq 57
+          @index['objects']['total_count'].should eq 62
         end
       end
     end
