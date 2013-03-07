@@ -281,6 +281,14 @@ module Gugg
               start_year, end_year, pass_params)
           end
 
+          get '/objects/recent' do
+            pass_params = check_params(
+              ['per_page', 'page', 'no_objects', 'no_essay'],
+              {:add_to_path => 'recent'})
+            jsonp Db::CollectionObject::recent_acquisitions
+          end
+
+
           #-------------------------------------------------------------
           # Object Types
           #-------------------------------------------------------------
