@@ -597,6 +597,17 @@ describe 'API Server' do
     end
   end
 
+  describe '/objects/recent' do
+    before :all do
+      @recent = make_request('/objects/recent', goodkey)
+    end
+
+    it 'should retrieve one object' do
+      @recent.should be_an_instance_of Hash
+      @recent['objects']['items'].count.should eq 1
+    end
+  end
+
   describe '/objects/dates' do
     before :all do
       @dates = make_request('/objects/dates', goodkey)
