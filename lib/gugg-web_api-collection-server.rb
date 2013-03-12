@@ -285,7 +285,7 @@ module Gugg
             pass_params = check_params(
               ['per_page', 'page', 'no_objects', 'no_essay'],
               {:add_to_path => 'recent'})
-            jsonp Db::CollectionObject::recent_acquisitions
+            jsonp Db::CollectionObject::recent_acquisitions(pass_params)
           end
 
 
