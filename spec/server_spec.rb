@@ -801,6 +801,30 @@ describe 'API Server' do
     end
   end
 
+  describe "quicksearch" do
+    it "can find Manet" do
+      manet = make_request('/quicksearch?q=Manet', goodkey)
+      manet['objects']['total_count'].should eq 3
+    end
+
+    it "can find manet" do
+      manet = make_request('/quicksearch?q=manet', goodkey)
+      manet['objects']['total_count'].should eq 3
+    end
+
+    it "can find Portrait of Countess Albazzi by accession" do
+      manet = make_request('/quicksearch?q=91.3909', goodkey)
+      manet['objects']['total_count'].should eq 1
+      manet['objects']['items'][0]['id'].should eq 2611
+    end
+
+    it "can find Portrait of Countess Albazzi by title" do
+      manet = make_request('/quicksearch?q=Countess+Albazzi', goodkey)
+      manet['objects']['total_count'].should eq 1
+      manet['objects']['items'][0]['id'].should eq 2611
+    end
+  end
+
   describe 'media links' do
     before :all do
       @obj = make_request('/objects/671', goodkey)

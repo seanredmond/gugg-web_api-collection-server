@@ -341,6 +341,17 @@ module Gugg
           end
 
           #-------------------------------------------------------------
+          # Quicksearch
+          #-------------------------------------------------------------
+
+          get '/quicksearch' do
+            pass_params = check_params(
+              ['q', 'per_page', 'page', 'no_objects', 'no_essay'],
+              {:add_to_path => 'quicksearch'})
+            jsonp Db::CollectionObject::quicksearch(pass_params)
+          end
+
+          #-------------------------------------------------------------
           # Errors
           #-------------------------------------------------------------
 
@@ -410,8 +421,9 @@ module Gugg
             jsonp err
           end
 
-          def check_params(allowable, to_merge)
-            allowable = ['per_page', 'page', 'no_objects', 'no_essay']
+          def check_params(
+              allowable=['per_page', 'page', 'no_objects', 'no_essay'], 
+              to_merge=[])
             pass_params = params.reject{|k, v| !allowable.include?(k)}
             pass_params.merge(to_merge)
           end
