@@ -803,10 +803,25 @@ describe 'API Server' do
 
   describe "quicksearch" do
     it "can find Manet" do
-      manet = make_request('/quicksearch?q=58.1530', goodkey)
-      puts manet['objects']['items'].map{|o| o['accession']}.inspect
-      manet['objects']['total_count'].should eq 345789
+      manet = make_request('/quicksearch?q=Manet', goodkey)
+      manet['objects']['total_count'].should eq 3
+    end
 
+    it "can find manet" do
+      manet = make_request('/quicksearch?q=manet', goodkey)
+      manet['objects']['total_count'].should eq 3
+    end
+
+    it "can find Portrait of Countess Albazzi by accession" do
+      manet = make_request('/quicksearch?q=91.3909', goodkey)
+      manet['objects']['total_count'].should eq 1
+      manet['objects']['items'][0]['id'].should eq 2611
+    end
+
+    it "can find Portrait of Countess Albazzi by title" do
+      manet = make_request('/quicksearch?q=Countess+Albazzi', goodkey)
+      manet['objects']['total_count'].should eq 1
+      manet['objects']['items'][0]['id'].should eq 2611
     end
   end
 

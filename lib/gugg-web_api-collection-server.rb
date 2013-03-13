@@ -348,7 +348,6 @@ module Gugg
             pass_params = check_params(
               ['q', 'per_page', 'page', 'no_objects', 'no_essay'],
               {:add_to_path => 'quicksearch'})
-            puts pass_params.inspect
             jsonp Db::CollectionObject::quicksearch(pass_params)
           end
 
