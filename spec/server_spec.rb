@@ -801,6 +801,15 @@ describe 'API Server' do
     end
   end
 
+  describe "quicksearch" do
+    it "can find Manet" do
+      manet = make_request('/quicksearch?q=58.1530', goodkey)
+      puts manet['objects']['items'].map{|o| o['accession']}.inspect
+      manet['objects']['total_count'].should eq 345789
+
+    end
+  end
+
   describe 'media links' do
     before :all do
       @obj = make_request('/objects/671', goodkey)
